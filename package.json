@@ -1,0 +1,21 @@
+{
+  "name": "vswebv2",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^7.1.2"
+  },
+  "dependencies": {
+    "@codemirror/theme-one-dark": "^6.1.3",
+    "@tailwindcss/vite": "^4.1.12",
+    "codemirror": "^6.0.2",
+    "split.js": "^1.6.5",
+    "tailwindcss": "^4.1.12"
+  }
+}
