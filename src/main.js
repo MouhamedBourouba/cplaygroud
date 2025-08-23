@@ -3,6 +3,7 @@ import { githubDark } from "@fsegurai/codemirror-theme-github-dark";
 import Split from "split.js";
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
+import RunC from "picoc-web";
 
 import "@xterm/xterm/css/xterm.css";
 import "./style.css";
@@ -23,7 +24,7 @@ document.querySelector("#app").innerHTML = `
 
 Split(["#split-editor", "#split-output"], {
   direction: "vertical",
-  sizes: [70, 30],
+  sizes: [90, 10],
   minSize: [100, 100],
   cursor: "row-resize",
 });
@@ -60,7 +61,9 @@ document.getElementById("runBtn").addEventListener("click", () => {
   terminal.clear();
 
   const code = editor.state.doc.toString();
-  terminal.write(`\r\nRunning code...\r\n`);
+  RunC(code).then((result) => {
+    terminal.write(result.stdout);
+  });
 });
 
 document.getElementById("shareBtn").addEventListener("click", () => {});
