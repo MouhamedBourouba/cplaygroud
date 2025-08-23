@@ -1,11 +1,17 @@
 import { EditorView, basicSetup } from "codemirror";
 import { githubDark } from "@fsegurai/codemirror-theme-github-dark";
+import { defaultKeymap, indentWithTab } from "@codemirror/commands";
+import { keymap } from "@codemirror/view";
+import { cpp } from "@codemirror/lang-cpp";
+
 import Split from "split.js";
+
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
+import "@xterm/xterm/css/xterm.css";
+
 import RunC from "picoc-web";
 
-import "@xterm/xterm/css/xterm.css";
 import "./style.css";
 
 document.querySelector("#app").innerHTML = `
@@ -35,7 +41,15 @@ int main() {
     printf("Hello, World!\\n");
     return 0;
 }`,
-  extensions: [basicSetup, githubDark],
+  extensions: [
+    basicSetup,
+    githubDark,
+    keymap.of([
+      indentWithTab, // 👈 makes Tab insert indentation
+      ...defaultKeymap,
+    ]),
+    cpp(),
+  ],
   parent: document.getElementById("split-editor"),
 });
 

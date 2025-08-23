@@ -12,6 +12,9 @@
     "vite": "^7.1.2"
   },
   "dependencies": {
+    "@codemirror/commands": "^6.8.1",
+    "@codemirror/lang-cpp": "^6.0.3",
+    "@codemirror/view": "^6.38.1",
     "@fsegurai/codemirror-theme-basic-dark": "^6.2.2",
     "@fsegurai/codemirror-theme-github-dark": "^6.2.2",
     "@tailwindcss/vite": "^4.1.12",
