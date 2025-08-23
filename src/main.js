@@ -79,6 +79,7 @@ document.querySelector("#app").innerHTML = `
 
 const shareModal = document.getElementById(componentIds.shareModal);
 const shareButton = document.getElementById(componentIds.shareButton);
+const copyUrlButton = document.getElementById(componentIds.copyUrlBtn);
 const shareUrlInput = document.getElementById(componentIds.shareUrlInput);
 const dismissModalBtn = document.getElementById(componentIds.dismissModalBtn);
 
@@ -88,11 +89,25 @@ dismissModalBtn.addEventListener("click", (event) => {
   }
 });
 
+copyUrlButton.addEventListener("click", (event) => {
+  const code = editor.state.doc.toString();
+  const base64 = btoa(encodeURIComponent(code));
+  const value = `${window.location.origin.toString()}/web-ide/s/${base64}`;
+  navigator.clipboard
+    .writeText(value)
+    .then(() => {
+      console.log("Copied to clipboard:", value);
+    })
+    .catch((err) => {
+      console.error("Failed to copy:", err);
+    });
+});
+
 shareButton.addEventListener("click", () => {
   shareModal.classList.remove("hidden");
   const code = editor.state.doc.toString();
   const base64 = btoa(encodeURIComponent(code));
-  shareUrlInput.value = `${window.location.origin.toString()}/s/${base64}`;
+  shareUrlInput.value = `${window.location.origin.toString()}/web-ide/s/${base64}`;
 });
 
 Split(
@@ -108,11 +123,21 @@ Split(
 const editor = new EditorView({
   doc: (() => {
     const defaultCode = `#include <stdio.h>
+
 int main() {
-  printf("Hello, World!\\n");
-  return 0;
-}`;
-    let regex = /^\/s\/(.*)$/;
+  printf("Hello world\\n");
+  
+  int Count;
+  for (Count = -5; Count <= 5; Count++)
+      printf("Count = %d\\n", Count);
+  
+  printf("String 'hello', 'there' is '%s', '%s'\\n", "hello", "there");
+  printf("Character 'A' is '%c'\\n", 65);
+  printf("Character 'a' is '%c'\\n", 'a');
+  return 1;
+}
+`;
+    let regex = /^\/web-ide\/s\/(.*)$/;
     let match = window.location.pathname.match(regex);
     let base64EncodedCode = match ? match[1] : null;
 
