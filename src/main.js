@@ -30,7 +30,11 @@ Split(["#split-editor", "#split-output"], {
 });
 
 const editor = new EditorView({
-  doc: "printf('Hello, from web ide buddy!');",
+  doc: `#include <stdio.h>
+int main() {
+    printf("Hello, World!\\n");
+    return 0;
+}`,
   extensions: [basicSetup, githubDark],
   parent: document.getElementById("split-editor"),
 });
@@ -55,15 +59,45 @@ observer.observe(xtermContainer);
 
 terminal.open(xtermContainer);
 
-terminal.write("Welcome to your Web IDE 🚀\r\n$ ");
-
-document.getElementById("runBtn").addEventListener("click", () => {
+document.getElementById("runBtn").addEventListener("click", async () => {
   terminal.clear();
-
   const code = editor.state.doc.toString();
-  RunC(code).then((result) => {
-    terminal.write(result.stdout);
-  });
+
+  try {
+    const result = await RunC(code);
+    terminal.clear();
+
+    // Banner
+    terminal.write("\x1b[1;44;97m▶ Running Program...\x1b[0m\r\n\r\n");
+
+    if (result.stdout) {
+      const fixedOutput = result.stdout.replace(/\n/g, "\r\n");
+      terminal.write(fixedOutput);
+    }
+
+    if (result.stderr) {
+      const fixedError = result.stderr.replace(/\n/g, "\r\n");
+      terminal.write(`\x1b[31m${fixedError}\x1b[0m\r\n`);
+    }
+
+    if (!result.stdout && !result.stderr) {
+      terminal.write(
+        "\x1b[1;32m✔ Program executed successfully (no output)\x1b[0m\r\n",
+      );
+    }
+  } catch (error) {
+    terminal.clear();
+    terminal.write("\x1b[1;41;97m⚠ Runtime Error\x1b[0m\r\n");
+    terminal.write(`\x1b[31m${error.message}\x1b[0m\r\n`);
+    console.error("RunC execution error:", error);
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+    event.preventDefault();
+    document.getElementById("runBtn").click();
+  }
 });
 
 document.getElementById("shareBtn").addEventListener("click", () => {});
