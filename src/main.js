@@ -163,7 +163,7 @@ shareButton.addEventListener("click", () => {
   shareModal.classList.remove("hidden");
   const code = editor.state.doc.toString();
   const base64 = btoa(encodeURIComponent(code));
-  shareUrlInput.value = `${window.location.origin.toString()}/web-ide/s/${base64}`;
+  shareUrlInput.value = `${window.location.origin.toString()}/cplayground/s/${base64}`;
 });
 
 Split(
