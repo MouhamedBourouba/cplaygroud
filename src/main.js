@@ -10,7 +10,7 @@ import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import "@xterm/xterm/css/xterm.css";
 
-import RunC from "picoc-web";
+import * as Picoc from "picoc-web";
 
 import "./style.css";
 
@@ -23,17 +23,42 @@ const componentIds = {
   outputContainer: "split-output",
   copyUrlBtn: "copyUrlBtn",
   shareUrlInput: "shareUrlInput",
+  runInput: "runInput",
+  clearInputBtn: "clearInputBtn",
 };
 
 document.querySelector("#app").innerHTML = `
   <div id="container" class="h-full w-full flex flex-col">
     <div
-      class="flex items-center gap-2 bg-[#1e1e1e] text-gray-200 px-2 py-1 text-sm"
+      class="flex items-center gap-3 bg-[#1e1e1e] text-gray-200 px-4 py-4 text-sm border-b border-gray-700"
     >
-      <button id="${componentIds.runButton}" class="px-2 py-0.5 rounded hover:bg-gray-700">
-        ▶ Run
+      <button id="${componentIds.runButton}" 
+        class="flex items-center gap-2 px-4 py-2 bg-green-800 text-xxl hover:bg-green-700 text-white rounded-lg font-medium transition-colors duration-200 shadow-sm">
+        Run
       </button>
-      <button id="${componentIds.shareButton}" class="px-2 py-0.5 rounded hover:bg-gray-700">
+      
+      <div class="flex items-center gap-2 flex-1 max-w-md">
+        <label for="${componentIds.runInput}" class="text-gray-300 font-medium whitespace-nowrap">
+          Input:
+        </label>
+        <div class="relative flex-1">
+          <input
+            type="text"
+            id="${componentIds.runInput}"
+            placeholder="Enter program input (e.g., numbers, text)..."
+            class="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+          />
+          <button 
+            id="${componentIds.clearInputBtn}"
+            class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200 transition-colors duration-200"
+            title="Clear input">
+            ✕
+          </button>
+        </div>
+      </div>
+      
+      <button id="${componentIds.shareButton}" 
+        class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition-colors duration-200 shadow-sm">
         Share
       </button>
     </div>
@@ -44,24 +69,24 @@ document.querySelector("#app").innerHTML = `
     </div>
   </div>
   <div id="${componentIds.shareModal}" 
-    class="hidden fixed inset-0 flex items-center justify-center z-50 h-screen w-screen">
+    class="hidden fixed inset-0 flex items-center justify-center z-50 h-screen w-screen bg-black bg-opacity-50">
     <div class="bg-[#1e1e1e] text-white rounded-2xl shadow-xl max-w-md w-full p-6 relative animate-fadeIn">
 
       <h2 class="text-xl font-bold mb-4">Share Code Snippet</h2>
-      <p class="mb-4">Copy the link below to share your code:</p>
+      <p class="mb-4 text-gray-300">Copy the link below to share your code:</p>
 
       <!-- URL Box -->
-      <div class="flex items-center bg-gray-800 rounded-lg overflow-hidden">
+      <div class="flex items-center bg-gray-800 rounded-lg overflow-hidden border border-gray-600">
         <input 
           id="${componentIds.shareUrlInput}"
           type="text" 
           readonly 
           value=""
-          class="flex-grow px-3 py-2 bg-transparent text-sm focus:outline-none"
+          class="flex-grow px-3 py-2 bg-transparent text-sm focus:outline-none text-gray-200"
         />
         <button 
           id="${componentIds.copyUrlBtn}" 
-          class="px-2 py-2 bg-blue-600 hover:bg-blue-500 text-sm font-medium">
+          class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-sm font-medium transition-colors duration-200">
           Copy
         </button>
       </div>
@@ -69,7 +94,7 @@ document.querySelector("#app").innerHTML = `
       <!-- Actions -->
       <div class="mt-6 flex justify-end">
         <button id="${componentIds.dismissModalBtn}" 
-          class="px-4 py-2 bg-white text-black rounded-lg">
+          class="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors duration-200">
           Close
         </button>
       </div>
@@ -82,12 +107,31 @@ const shareButton = document.getElementById(componentIds.shareButton);
 const copyUrlButton = document.getElementById(componentIds.copyUrlBtn);
 const shareUrlInput = document.getElementById(componentIds.shareUrlInput);
 const dismissModalBtn = document.getElementById(componentIds.dismissModalBtn);
+const runInput = document.getElementById(componentIds.runInput);
+const clearInputBtn = document.getElementById(componentIds.clearInputBtn);
 
 dismissModalBtn.addEventListener("click", (event) => {
   if (!shareModal.classList.contains("hidden")) {
     shareModal.classList.add("hidden");
   }
 });
+
+shareModal.addEventListener("click", (event) => {
+  if (event.target === shareModal) {
+    shareModal.classList.add("hidden");
+  }
+});
+
+clearInputBtn.addEventListener("click", () => {
+  runInput.value = "";
+  runInput.focus();
+});
+
+runInput.addEventListener("input", () => {
+  clearInputBtn.style.display = runInput.value ? "block" : "none";
+});
+
+clearInputBtn.style.display = runInput.value ? "block" : "none";
 
 copyUrlButton.addEventListener("click", (event) => {
   const code = editor.state.doc.toString();
@@ -97,10 +141,21 @@ copyUrlButton.addEventListener("click", (event) => {
     .writeText(value)
     .then(() => {
       console.log("Copied to clipboard:", value);
+      copyUrlButton.textContent = "Copied!";
+      setTimeout(() => {
+        copyUrlButton.textContent = "Copy";
+      }, 2000);
     })
     .catch((err) => {
       console.error("Failed to copy:", err);
+      copyUrlButton.textContent = "Failed";
+      setTimeout(() => {
+        copyUrlButton.textContent = "Copy";
+      }, 2000);
     });
+  if (!shareModal.classList.contains("hidden")) {
+    shareModal.classList.add("hidden");
+  }
 });
 
 shareButton.addEventListener("click", () => {
@@ -125,16 +180,14 @@ const editor = new EditorView({
     const defaultCode = `#include <stdio.h>
 
 int main() {
-  printf("Hello world\\n");
-  
-  int Count;
-  for (Count = -5; Count <= 5; Count++)
-      printf("Count = %d\\n", Count);
-  
-  printf("String 'hello', 'there' is '%s', '%s'\\n", "hello", "there");
-  printf("Character 'A' is '%c'\\n", 65);
-  printf("Character 'a' is '%c'\\n", 'a');
-  return 1;
+    printf("Hello world\\n");
+    printf("Enter your name: ");
+    
+    char name[50];
+    scanf("%s", name);
+    
+    printf("Hello, %s!\\n", name);
+    return 0;
 }
 `;
     let regex = /^\/web-ide\/s\/(.*)$/;
@@ -183,33 +236,22 @@ document
   .addEventListener("click", async () => {
     terminal.clear();
     const code = editor.state.doc.toString();
+    const input = document.getElementById(componentIds.runInput).value;
 
     try {
-      const result = await RunC(code);
       terminal.clear();
-
-      // Banner
-      terminal.write("\x1b[1;44;97m▶ Running Program...\x1b[0m\r\n\r\n");
-
-      if (result.stdout) {
-        const fixedOutput = result.stdout.replace(/\n/g, "\r\n");
-        terminal.write(fixedOutput);
-      }
-
-      if (result.stderr) {
-        const fixedError = result.stderr.replace(/\n/g, "\r\n");
-        terminal.write(`\x1b[31m${fixedError}\x1b[0m\r\n`);
-      }
-
-      if (!result.stdout && !result.stderr) {
-        terminal.write(
-          "\x1b[1;32m✔ Program executed successfully (no output)\x1b[0m\r\n",
-        );
-      }
+      terminal.writeln("\x1b[1;32m🚀 Running your code...\x1b[0m\r\n");
+      await Picoc.RunWithInputOutput(code, input ?? "", (value) =>
+        terminal.writeln(value),
+      );
+      terminal.writeln("\r\n\x1b[1;32m✅ Program finished successfully\x1b[0m");
     } catch (error) {
       terminal.clear();
-      terminal.write("\x1b[1;41;97m⚠ Runtime Error\x1b[0m\r\n");
-      terminal.write(`\x1b[31m${error.message}\x1b[0m\r\n`);
+      terminal.writeln("\x1b[1;41;97m ⚠ Runtime Error \x1b[0m\r\n");
+      terminal.writeln(`\x1b[31m${error.message}\x1b[0m\r\n`);
+      terminal.writeln(
+        "\x1b[33m💡 Check your code for syntax errors or runtime issues\x1b[0m",
+      );
       console.error("RunC execution error:", error);
     }
   });
@@ -218,5 +260,9 @@ document.addEventListener("keydown", (event) => {
   if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
     event.preventDefault();
     document.getElementById(componentIds.runButton).click();
+  }
+
+  if (event.key === "Escape" && !shareModal.classList.contains("hidden")) {
+    shareModal.classList.add("hidden");
   }
 });
