@@ -137,7 +137,7 @@ clearInputBtn.style.display = runInput.value ? "block" : "none";
 copyUrlButton.addEventListener("click", (event) => {
   const code = editor.state.doc.toString();
   const base64 = btoa(encodeURIComponent(code));
-  const value = `${window.location.origin.toString()}/web-ide/s/${base64}`;
+  const value = `${window.location.origin.toString()}/cplayground/s/${base64}`;
   navigator.clipboard
     .writeText(value)
     .then(() => {
