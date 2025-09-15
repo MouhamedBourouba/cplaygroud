@@ -95,14 +95,14 @@ WARNING: This link could potentially be dangerous`)){const I=window.open();if(I)
 `;const Qe=document.getElementById(SA.shareModal),_D=document.getElementById(SA.shareButton),TQ=document.getElementById(SA.copyUrlBtn),qD=document.getElementById(SA.shareUrlInput),$D=document.getElementById(SA.dismissModalBtn),Ft=document.getElementById(SA.runInput),OC=document.getElementById(SA.clearInputBtn);$D.addEventListener("click",Q=>{Qe.classList.contains("hidden")||Qe.classList.add("hidden")});Qe.addEventListener("click",Q=>{Q.target===Qe&&Qe.classList.add("hidden")});OC.addEventListener("click",()=>{Ft.value="",Ft.focus()});Ft.addEventListener("input",()=>{OC.style.display=Ft.value?"block":"none"});OC.style.display=Ft.value?"block":"none";TQ.addEventListener("click",Q=>{const A=RC.state.doc.toString(),B=btoa(encodeURIComponent(A)),e=`${window.location.origin.toString()}/web-ide/s/${B}`;navigator.clipboard.writeText(e).then(()=>{console.log("Copied to clipboard:",e),TQ.textContent="Copied!",setTimeout(()=>{TQ.textContent="Copy"},2e3)}).catch(t=>{console.error("Failed to copy:",t),TQ.textContent="Failed",setTimeout(()=>{TQ.textContent="Copy"},2e3)}),Qe.classList.contains("hidden")||Qe.classList.add("hidden")});_D.addEventListener("click",()=>{Qe.classList.remove("hidden");const Q=RC.state.doc.toString(),A=btoa(encodeURIComponent(Q));qD.value=`${window.location.origin.toString()}/web-ide/s/${A}`});XD([`#${SA.editorContainer}`,`#${SA.outputContainer}`],{direction:"vertical",sizes:[90,10],minSize:[100,100],cursor:"row-resize"});const RC=new oA({doc:(()=>{const Q=`#include <stdio.h>
 
 int main() {
-    printf("Hello world\\n");
-    printf("Enter your name: ");
-    
-    char name[50];
-    scanf("%s", name);
-    
-    printf("Hello, %s!\\n", name);
-    return 0;
+  printf("Hello world\\n");
+  printf("Enter your name: ");
+  
+  char name[50];
+  scanf("%s", name);
+  
+  printf("Hello, %s!\\n", name);
+  return 0;
 }
 `;let A=/^\/web-ide\/s\/(.*)$/,B=window.location.pathname.match(A),e=B?B[1]:null;return e==null?Q:decodeURIComponent(atob(e))})(),extensions:[WU,tD,jg.of([cF,...fw]),yD()],parent:document.getElementById(SA.editorContainer)}),zB=new ZD.Terminal({theme:{background:"#1e1e1e",foreground:"#ffffff",cursor:"#ffffff"},fontSize:14,fontFamily:'Monaco, Menlo, "Ubuntu Mono", monospace'});let zw=document.getElementById(SA.outputContainer);const _w=new TD.FitAddon;zB.loadAddon(_w);const Af=new ResizeObserver(Q=>_w.fit());Af.observe(zw);zB.open(zw);document.getElementById(SA.runButton).addEventListener("click",async()=>{zB.clear();const Q=RC.state.doc.toString(),A=document.getElementById(SA.runInput).value;try{zB.clear(),await zD(Q,A??"",B=>zB.writeln(B)),zB.writeln(`\r
 \x1B[1;32m✅ Program finished\x1B[0m`)}catch(B){zB.clear(),zB.writeln(`\x1B[1;41;97m ⚠ Runtime Error \x1B[0m\r
