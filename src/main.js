@@ -191,7 +191,7 @@ int main() {
   return 0;
 }
 `;
-    let regex = /^\/web-ide\/s\/(.*)$/;
+    let regex = /^\/cplayground\/s\/(.*)$/;
     let match = window.location.pathname.match(regex);
     let base64EncodedCode = match ? match[1] : null;
 
