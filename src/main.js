@@ -181,14 +181,14 @@ const editor = new EditorView({
     const defaultCode = `#include <stdio.h>
 
 int main() {
-    printf("Hello world\\n");
-    printf("Enter your name: ");
-    
-    char name[50];
-    scanf("%s", name);
-    
-    printf("Hello, %s!\\n", name);
-    return 0;
+  printf("Hello world\\n");
+  printf("Enter your name: ");
+  
+  char name[50];
+  scanf("%s", name);
+  
+  printf("Hello, %s!\\n", name);
+  return 0;
 }
 `;
     let regex = /^\/web-ide\/s\/(.*)$/;
