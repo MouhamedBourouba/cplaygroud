@@ -2,7 +2,7 @@
   "name": "vswebv2",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://mouhamedbourouba.github.io/web-ide",
+  "homepage": "https://mouhamedbourouba.github.io/cplayground",
   "type": "module",
   "scripts": {
     "dev": "vite",
