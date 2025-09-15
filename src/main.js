@@ -45,6 +45,7 @@ document.querySelector("#app").innerHTML = `
           <input
             type="text"
             id="${componentIds.runInput}"
+            autocomplete = "off"
             placeholder="Enter program input (e.g., numbers, text)..."
             class="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
           />
@@ -240,11 +241,10 @@ document
 
     try {
       terminal.clear();
-      terminal.writeln("\x1b[1;32m🚀 Running your code...\x1b[0m\r\n");
       await Picoc.RunWithInputOutput(code, input ?? "", (value) =>
         terminal.writeln(value),
       );
-      terminal.writeln("\r\n\x1b[1;32m✅ Program finished successfully\x1b[0m");
+      terminal.writeln("\r\n\x1b[1;32m✅ Program finished\x1b[0m");
     } catch (error) {
       terminal.clear();
       terminal.writeln("\x1b[1;41;97m ⚠ Runtime Error \x1b[0m\r\n");
