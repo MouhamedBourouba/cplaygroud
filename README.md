@@ -1,5 +1,6 @@
 # web-ide
 A c-playgroud made with [picoc-web](https://github.com/MouhamedBourouba/picoc-web)
+try it here: https://mouhamedbourouba.github.io/cplayground/
 
 <!-- ## 1. Introduction -->
 <!-- - **What is the purpose of this project?**   -->
