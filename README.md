@@ -1,4 +1,4 @@
-# web-ide
+# cplayground
 A c-playgroud made with [picoc-web](https://github.com/MouhamedBourouba/picoc-web)
 try it here: https://mouhamedbourouba.github.io/cplayground/
 
